@@ -49,9 +49,12 @@ export class WebApiService {
 // functions
   // private header = new HttpHeaders().append('Access-Control-Allow-Origin', this.mainDomain);
 
-  async RegisterNewUser (name: string, email: string, password: string) {
-    const url = this.urlCreateUser;
+  async RegisterNewUser (needProxy: boolean = false, name: string, email: string, password: string) {
+    let url = this.urlCreateUser;
     let returnValue = false;
+
+    if (needProxy === true)
+      url = this.proxy + url;
 
     const postData = {
       "name": name,
@@ -80,9 +83,12 @@ export class WebApiService {
     return returnValue;
   }
 
-  async LoginUser (email: string, password: string) {
-    const url = this.urlLoginUser;
+  async LoginUser (needProxy: boolean = false, email: string, password: string) {
+    let url = this.urlLoginUser;
     let returnValue = false;
+
+    if (needProxy === true)
+      url = this.proxy + url;
 
     const postData = {
       "email": email,
@@ -110,9 +116,12 @@ export class WebApiService {
     return returnValue;
   }
 
-  async CheckSessionLogin (id: string) {
-    const url = this.urlCheckLoginSession;
+  async CheckSessionLogin (needProxy: boolean = false, id: string) {
+    let url = this.urlCheckLoginSession;
     let returnValue = false;
+
+    if (needProxy === true)
+      url = this.proxy + url;
 
     const postData = {
       "id": id
@@ -139,9 +148,12 @@ export class WebApiService {
     return returnValue;
   }
 
-  async UpdateSessionLogin (id: string) {
-    const url = this.urlUpdateLoginSession;
+  async UpdateSessionLogin (needProxy: boolean = false, id: string) {
+    let url = this.urlUpdateLoginSession;
     let returnValue = false;
+
+    if (needProxy === true)
+      url = this.proxy + url;
 
     const postData = {
       "id": id
@@ -168,8 +180,11 @@ export class WebApiService {
     return returnValue;
   }
 
-  async GetUserId (email: string) {
-    const url = this.proxy + this.urlUserIdUsingEmail + email;
+  async GetUserId (needProxy: boolean = false, email: string) {
+    let url = this.proxy + this.urlUserIdUsingEmail + email;
+
+    if (needProxy === true)
+      url = this.proxy + url;
 
     return await this.http.get(url).toPromise()
       .then((res) => {
@@ -199,8 +214,11 @@ export class WebApiService {
       });
   }
 
-  async GetUserIdv2 (email: string) {
-    const url = this.urlUserIdUsingEmailv2;
+  async GetUserIdv2 (needProxy: boolean = false, email: string) {
+    let url = this.urlUserIdUsingEmailv2;
+
+    if (needProxy === true)
+      url = this.proxy + url;
 
     const postData = {
       "email": email,
@@ -234,8 +252,11 @@ export class WebApiService {
       });
   }
 
-  async GetUserInfo (id: string) {
-    const url = this.proxy + this.urlUserInfoUsingId + id;
+  async GetUserInfo (needProxy: boolean = false, id: string) {
+    let url = this.proxy + this.urlUserInfoUsingId + id;
+
+    if (needProxy === true)
+      url = this.proxy + url;
 
     return await this.http.get(url).toPromise()
       .then((res) => {
@@ -265,9 +286,12 @@ export class WebApiService {
       });
   }
 
-  async LogoutUser (id: string) {
-    const url = this.urlLogoutUser;
+  async LogoutUser (needProxy: boolean = false, id: string) {
+    let url = this.urlLogoutUser;
     let returnValue = false;
+
+    if (needProxy === true)
+      url = this.proxy + url;
 
     const postData = {
       "id": id,
@@ -294,9 +318,12 @@ export class WebApiService {
     return returnValue;
   }
 
-  async ChangePassword (id: string, oldPass: string, newPass: string) {
-    const url = this.urlChangePassword;
+  async ChangePassword (needProxy: boolean = false, id: string, oldPass: string, newPass: string) {
+    let url = this.urlChangePassword;
     let returnValue = false;
+
+    if (needProxy === true)
+      url = this.proxy + url;
 
     const postData = {
       "id": id,
@@ -325,9 +352,12 @@ export class WebApiService {
     return returnValue;
   }
 
-  async CreateNewDevice (name: string, status: boolean, description: string, id_user: string) {
-    const url = this.urlCreateDevice;
+  async CreateNewDevice (needProxy: boolean = false, name: string, status: boolean, description: string, id_user: string) {
+    let url = this.urlCreateDevice;
     let returnValue = false;
+
+    if (needProxy === true)
+      url = this.proxy + url;
 
     const postData = {
       "name": name,
@@ -357,8 +387,11 @@ export class WebApiService {
     return returnValue;
   }
 
-  async GetAllDevice (email: string) {
-    const url = this.proxy + this.urlDeviceAllUsingEmail + email;
+  async GetAllDevice (needProxy: boolean = false, email: string) {
+    let url = this.proxy + this.urlDeviceAllUsingEmail + email;
+
+    if (needProxy === true)
+      url = this.proxy + url;
 
     return await this.http.get(url).toPromise()
       .then((res) => {
@@ -388,8 +421,11 @@ export class WebApiService {
       });
   }
 
-  async GetDeviceInfo (id: string) {
-    const url = this.proxy + this.urlDeviceInfoUsingId + id;
+  async GetDeviceInfo (needProxy: boolean = false, id: string) {
+    let url = this.proxy + this.urlDeviceInfoUsingId + id;
+
+    if (needProxy === true)
+      url = this.proxy + url;
 
     return await this.http.get(url).toPromise()
       .then((res) => {
@@ -419,9 +455,12 @@ export class WebApiService {
       });
   }
 
-  async EditDeviceInfo (id: string, name: string, status: boolean, description: string) {
-    const url = this.urlDeviceEditInfo;
+  async EditDeviceInfo (needProxy: boolean = false, id: string, name: string, status: boolean, description: string) {
+    let url = this.urlDeviceEditInfo;
     let returnValue = false;
+
+    if (needProxy === true)
+      url = this.proxy + url;
 
     const postData = {
       "id": id,
@@ -451,9 +490,12 @@ export class WebApiService {
     return returnValue;
   }
 
-  async DeleteDevice (id: string) {
-    const url = this.urlDeleteDevice;
+  async DeleteDevice (needProxy: boolean = false, id: string) {
+    let url = this.urlDeleteDevice;
     let returnValue = false;
+
+    if (needProxy === true)
+      url = this.proxy + url;
 
     const postData = {
       "id": id
@@ -480,9 +522,12 @@ export class WebApiService {
     return returnValue;
   }
 
-  async CreateNewData (name: string, value: any, id_device: string) {
-    const url = this.urlCreateData;
+  async CreateNewData (needProxy: boolean = false, name: string, value: any, id_device: string) {
+    let url = this.urlCreateData;
     let returnValue = false;
+
+    if (needProxy === true)
+      url = this.proxy + url;
 
     const postData = {
       "name": name,
@@ -511,8 +556,11 @@ export class WebApiService {
     return returnValue;
   }
 
-  async GetAllData (id_device: string) {
-    const url = this.proxy + this.urlDataAllUsingDevId + id_device;
+  async GetAllData (needProxy: boolean = false, id_device: string) {
+    let url = this.proxy + this.urlDataAllUsingDevId + id_device;
+
+    if (needProxy === true)
+      url = this.proxy + url;
 
     return await this.http.get(url).toPromise()
       .then((res) => {
@@ -542,8 +590,11 @@ export class WebApiService {
       });
   }
 
-  async GetDataInfo (id: string) {
-    const url = this.proxy + this.urlDataInfoUsingId + id;
+  async GetDataInfo (needProxy: boolean = false, id: string) {
+    let url = this.proxy + this.urlDataInfoUsingId + id;
+
+    if (needProxy === true)
+      url = this.proxy + url;
 
     return await this.http.get(url).toPromise()
       .then((res) => {
@@ -573,9 +624,12 @@ export class WebApiService {
       });
   }
 
-  async EditDataInfo (id: string, name: string) {
-    const url = this.urlDataEditInfo;
+  async EditDataInfo (needProxy: boolean = false, id: string, name: string) {
+    let url = this.urlDataEditInfo;
     let returnValue = false;
+
+    if (needProxy === true)
+      url = this.proxy + url;
 
     const postData = {
       "id": id,
@@ -603,9 +657,12 @@ export class WebApiService {
     return returnValue;
   }
 
-  async DeleteData (id: string) {
-    const url = this.urlDeleteData;
+  async DeleteData (needProxy: boolean = false, id: string) {
+    let url = this.urlDeleteData;
     let returnValue = false;
+
+    if (needProxy === true)
+      url = this.proxy + url;
 
     const postData = {
       "id": id

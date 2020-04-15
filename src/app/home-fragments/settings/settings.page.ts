@@ -39,25 +39,32 @@ export class SettingsPage implements OnInit {
 
   async checkSessionLogin () {
     let returnValue = false;
+    let secretFlag = false;
 
     const userId = await this.pref.getData(StaticVariable.USER_ID);
-    await this.api.CheckSessionLogin(userId).then(async res => {
+    await this.api.CheckSessionLogin(false, userId).then(async res => {
 
-      let secretFlag = false;
-      
-      if (res === true) {
-        await this.api.UpdateSessionLogin(userId).then().catch();
+      if (res === true){
+        await this.api.UpdateSessionLogin(false, userId).then().catch();
         await this.pref.setData(StaticVariable.LAST_LOGIN, ExFunctions.getUTCTime());
         returnValue = true
         secretFlag = true;
+      } else {
+        await this.api.CheckSessionLogin(true, userId).then(async res => {
+          if (res === true) {
+            await this.api.UpdateSessionLogin(true, userId).then().catch();
+            await this.pref.setData(StaticVariable.LAST_LOGIN, ExFunctions.getUTCTime());
+            returnValue = true
+            secretFlag = true;
+          }
+        });
       }
 
       if (secretFlag === false) {
         const lastLL = await this.pref.getData(StaticVariable.LAST_LOGIN);
         returnValue = ExFunctions.checkLocalSession(lastLL);
         await this.pref.setData(StaticVariable.LAST_LOGIN, ExFunctions.getUTCTime());
-      }
-      
+      }    
 
     }, () => {
       this.dismissLoadCtrl();
@@ -91,7 +98,7 @@ export class SettingsPage implements OnInit {
 
   async refreshData () {
     const userId = await this.pref.getData(StaticVariable.USER_ID);
-    await this.api.GetUserInfo(userId).then(res => {
+    await this.api.GetUserInfo(true, userId).then(res => {
       const userInfo = res['result'];
       this.user_id = userInfo['id'];
       this.user_name = userInfo['name'];
@@ -184,13 +191,25 @@ export class SettingsPage implements OnInit {
             }
 
             this.createLoadCtrl();            
-            await this.api.ChangePassword(this.user_id, data.oldpass, data.newpass).then(res => {
-              this.dismissLoadCtrl();
+            await this.api.ChangePassword(false, this.user_id, data.oldpass, data.newpass).then(async res => {
+              
               if (res === true) {
+                this.dismissLoadCtrl();
                 this.presentAlert("Your password has changed!");
               } else {
-                this.presentAlert("Oops! Your old password doesn't match, please try again!");
+                await this.api.ChangePassword(true, this.user_id, data.oldpass, data.newpass).then(res => {
+
+                  if (res === true) {
+                    this.dismissLoadCtrl();
+                    this.presentAlert("Your password has changed!");
+                  } else {
+                    this.dismissLoadCtrl();
+                    this.presentAlert("Oops! Your old password doesn't match, please try again!");
+                  }
+
+                });                
               }
+              
             });
           }
         }

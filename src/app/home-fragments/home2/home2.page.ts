@@ -40,25 +40,32 @@ export class Home2Page implements OnInit {
 
   async checkSessionLogin () {
     let returnValue = false;
+    let secretFlag = false;
 
     const userId = await this.pref.getData(StaticVariable.USER_ID);
-    await this.api.CheckSessionLogin(userId).then(async res => {
+    await this.api.CheckSessionLogin(false, userId).then(async res => {
 
-      let secretFlag = false;
-      
-      if (res === true) {
-        await this.api.UpdateSessionLogin(userId).then().catch();
+      if (res === true){
+        await this.api.UpdateSessionLogin(false, userId).then().catch();
         await this.pref.setData(StaticVariable.LAST_LOGIN, ExFunctions.getUTCTime());
         returnValue = true
         secretFlag = true;
+      } else {
+        await this.api.CheckSessionLogin(true, userId).then(async res => {
+          if (res === true) {
+            await this.api.UpdateSessionLogin(true, userId).then().catch();
+            await this.pref.setData(StaticVariable.LAST_LOGIN, ExFunctions.getUTCTime());
+            returnValue = true
+            secretFlag = true;
+          }
+        });
       }
 
       if (secretFlag === false) {
         const lastLL = await this.pref.getData(StaticVariable.LAST_LOGIN);
         returnValue = ExFunctions.checkLocalSession(lastLL);
         await this.pref.setData(StaticVariable.LAST_LOGIN, ExFunctions.getUTCTime());
-      }
-      
+      }    
 
     }, () => {
       this.dismissLoadCtrl();
@@ -102,9 +109,9 @@ export class Home2Page implements OnInit {
 
   async getData () {
     const deviceId = await this.pref.getData(StaticVariable.DEVICE_ID);
-    const deviceData = await this.api.GetDeviceInfo(deviceId);
+    const deviceData = await this.api.GetDeviceInfo(true, deviceId);
     this.deviceName = deviceData['result']['name'];
-    const getSensors = await this.api.GetAllData(deviceData['result']['id']);
+    const getSensors = await this.api.GetAllData(true, deviceData['result']['id']);
     for (let i = 0 ; i < getSensors['result'].length ; i++) {
       this.sensorList.push(getSensors['result'][i]);
     }    
@@ -132,14 +139,25 @@ export class Home2Page implements OnInit {
           handler: async data => {
             this.createLoadCtrl();
             const deviceId = await this.pref.getData(StaticVariable.DEVICE_ID);
-            await this.api.CreateNewData(data.name, 0, deviceId).then(res => {
-              this.dismissLoadCtrl();
+            await this.api.CreateNewData(false, data.name, 0, deviceId).then(async res => {
+
               if (res === true) {
-                this.refreshData();
+                await this.refreshData();
               } else {
-                this.presentAlert("Oops! Failed to add new sensor, please try again later!")
+                await this.api.CreateNewData(false, data.name, 0, deviceId).then(async res => {
+
+                  if (res === true) {
+                    await this.refreshData();
+                  } else {
+                    this.presentAlert("Oops! Failed to add new sensor, please try again later!")
+                  }
+
+                });
               }
+
             });
+
+            this.dismissLoadCtrl();
           }
         }
       ]
@@ -148,14 +166,17 @@ export class Home2Page implements OnInit {
   }
 
   async seeDetails () {
+    this.createLoadCtrl()
     const deviceId = await this.pref.getData(StaticVariable.DEVICE_ID);
-    const getDevice = await this.api.GetDeviceInfo(deviceId);
+    const getDevice = await this.api.GetDeviceInfo(true, deviceId);
     const deviceInfo = getDevice['result'];
 
     const modal = await this.modalCtrl.create({
       component: SeeDeviceDetailsPage,
       componentProps: deviceInfo
     });
+    
+    this.dismissLoadCtrl();
     await modal.present();
   }
 
@@ -169,7 +190,7 @@ export class Home2Page implements OnInit {
           handler: async data => {
             this.createLoadCtrl()
             const deviceId = await this.pref.getData(StaticVariable.DEVICE_ID);
-            await this.api.DeleteDevice(deviceId).then(res => {
+            await this.api.DeleteDevice(false, deviceId).then(res => {
               this.dismissLoadCtrl();
               if (res === true) {
                 this.navCtrl.navigateBack(['home/home1']);

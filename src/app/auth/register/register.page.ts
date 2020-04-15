@@ -39,14 +39,23 @@ export class RegisterPage implements OnInit {
     }
 
     this.createLoadCtrl();
-    this.api.RegisterNewUser(this.input_name, this.input_email, this.input_password).then(async res => {
-      this.dismissLoadCtrl();
+    this.api.RegisterNewUser(false, this.input_name, this.input_email, this.input_password).then(async res => {
       if (res === true) {
+        this.dismissLoadCtrl();
+        this.presentAlert("Your account has been registered successfully!");
         this.navCtrl.navigateBack(['login']);
       } else {
-        this.presentAlert("This email has been registered!");
+        this.api.RegisterNewUser(true, this.input_name, this.input_email, this.input_password).then(async res => {
+          if (res === true) {
+            this.dismissLoadCtrl();
+            this.presentAlert("Your account has been registered successfully!");
+            this.navCtrl.navigateBack(['login']);
+          } else {
+            this.presentAlert("This email has been registered!");
+          }
+        });
       }
-    })
+    });
   }
 
   /**

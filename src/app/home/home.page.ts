@@ -31,17 +31,25 @@ export class HomePage {
 
   async checkSessionLogin () {
     let returnValue = false;
+    let secretFlag = false;
 
     const userId = await this.pref.getData(StaticVariable.USER_ID);
-    await this.api.CheckSessionLogin(userId).then(async res => {
+    await this.api.CheckSessionLogin(false, userId).then(async res => {
 
-      let secretFlag = false;
-      
-      if (res === true) {
-        await this.api.UpdateSessionLogin(userId).then().catch();
+      if (res === true){
+        await this.api.UpdateSessionLogin(false, userId).then().catch();
         await this.pref.setData(StaticVariable.LAST_LOGIN, ExFunctions.getUTCTime());
         returnValue = true
         secretFlag = true;
+      } else {
+        await this.api.CheckSessionLogin(true, userId).then(async res => {
+          if (res === true) {
+            await this.api.UpdateSessionLogin(true, userId).then().catch();
+            await this.pref.setData(StaticVariable.LAST_LOGIN, ExFunctions.getUTCTime());
+            returnValue = true
+            secretFlag = true;
+          }
+        });
       }
 
       if (secretFlag === false) {
@@ -63,8 +71,7 @@ export class HomePage {
     this.createLoadCtrl();
     const sessionLogin = await this.checkSessionLogin();
     console.log(sessionLogin);
-    
-    
+        
     if (sessionLogin === false) {
       this.navCtrl.navigateRoot(['login']);
     } else {
@@ -76,13 +83,28 @@ export class HomePage {
   async refreshData () {
     const userId = await this.pref.getData(StaticVariable.USER_ID);
     
-    await this.api.GetUserInfo(userId).then(res => {
+    await this.api.GetUserInfo(false, userId).then(async res => {
       this.username = res['result']['name'];
-      this.pref.setData(StaticVariable.USERNAME, res['result']['name']);
-      return;
-    });
+      
+      if (this.username === undefined) {
+        await this.api.GetUserInfo(true, userId).then(async res => {
+          this.username = res['result']['name'];
+          
+          if (this.username === undefined ) {
+            this.username = await this.pref.getData(StaticVariable.USERNAME);
+            return;
+          } else {
+            this.pref.setData(StaticVariable.USERNAME, res['result']['name']);
+            return;
+          }
 
-    this.username = await this.pref.getData(StaticVariable.USERNAME);
+        });
+      } else {
+        this.pref.setData(StaticVariable.USERNAME, res['result']['name']);
+        return;
+      }
+
+    });
   }
 
   goToHome () {
@@ -113,7 +135,7 @@ export class HomePage {
             this.createLoadCtrl();
 
             const userId = await this.pref.getData(StaticVariable.USER_ID);
-            this.api.LogoutUser(userId).then(async res => {
+            this.api.LogoutUser(false, userId).then(async res => {
               this.dismissLoadCtrl();
               if (res === true) {
                 

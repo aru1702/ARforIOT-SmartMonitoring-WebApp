@@ -35,39 +35,61 @@ export class LoginPage implements OnInit {
 
     this.createLoadCtrl();
 
-    this.api.LoginUser(this.input_email, this.input_password).then(async res => {
+    this.api.LoginUser(false, this.input_email, this.input_password).then(res => {
       if (res === true) {
-        let userId = "";
-        
-        if (userId === "") {
-          await this.api.GetUserId(this.input_email).then(res => {
-            userId = res['result']['id'];
-          });
-        }
-        
-        if (userId === undefined) {
-          await this.api.GetUserIdv2(this.input_email).then(res => {
-            userId = res['result']['id'];
-          });
-        }
-
-        if (userId === undefined) {
-          this.dismissLoadCtrl();
-          this.presentAlert("Failed to perform login, please try again!");
-          return;
-        }
-        
-        if (userId != undefined) {
-          this.pref.setData(StaticVariable.USER_ID, userId);
-          this.pref.setData(StaticVariable.LAST_LOGIN, ExFunctions.getUTCTime());
-          this.dismissLoadCtrl();
-          this.navCtrl.navigateRoot(['home']);
-        }
+        this.getUserId();
       } else {
-        this.dismissLoadCtrl();
-        this.presentAlert("Incorrect email or password!");
+        this.api.LoginUser(true, this.input_email, this.input_password).then(res => {
+          if (res === true) {
+            this.getUserId();
+          } else {
+            this.dismissLoadCtrl();
+            this.presentAlert("Incorrect email or password!");
+          }
+        });
       }
-    })
+    });
+  }
+
+  async getUserId () {
+    let userId = "";
+        
+    if (userId === "") {
+      await this.api.GetUserId(false, this.input_email).then(res => {
+        userId = res['result']['id'];
+      });
+    }
+
+    if (userId === undefined) {
+      await this.api.GetUserId(true, this.input_email).then(res => {
+        userId = res['result']['id'];
+      });
+    }
+    
+    if (userId === undefined) {
+      await this.api.GetUserIdv2(false, this.input_email).then(res => {
+        userId = res['result']['id'];
+      });
+    }
+
+    if (userId === undefined) {
+      await this.api.GetUserIdv2(true, this.input_email).then(res => {
+        userId = res['result']['id'];
+      });
+    }
+
+    if (userId === undefined) {
+      this.dismissLoadCtrl();
+      this.presentAlert("Failed to perform login, please try again!");
+      return;
+    }
+    
+    if (userId != undefined) {
+      this.pref.setData(StaticVariable.USER_ID, userId);
+      this.pref.setData(StaticVariable.LAST_LOGIN, ExFunctions.getUTCTime());
+      this.dismissLoadCtrl();
+      this.navCtrl.navigateRoot(['home']);
+    }
   }
 
   goToRegister () {

@@ -32,25 +32,32 @@ export class Home3Page implements OnInit {
 
   async checkSessionLogin () {
     let returnValue = false;
+    let secretFlag = false;
 
     const userId = await this.pref.getData(StaticVariable.USER_ID);
-    await this.api.CheckSessionLogin(userId).then(async res => {
+    await this.api.CheckSessionLogin(false, userId).then(async res => {
 
-      let secretFlag = false;
-      
-      if (res === true) {
-        await this.api.UpdateSessionLogin(userId).then().catch();
+      if (res === true){
+        await this.api.UpdateSessionLogin(false, userId).then().catch();
         await this.pref.setData(StaticVariable.LAST_LOGIN, ExFunctions.getUTCTime());
         returnValue = true
         secretFlag = true;
+      } else {
+        await this.api.CheckSessionLogin(true, userId).then(async res => {
+          if (res === true) {
+            await this.api.UpdateSessionLogin(true, userId).then().catch();
+            await this.pref.setData(StaticVariable.LAST_LOGIN, ExFunctions.getUTCTime());
+            returnValue = true
+            secretFlag = true;
+          }
+        });
       }
 
       if (secretFlag === false) {
         const lastLL = await this.pref.getData(StaticVariable.LAST_LOGIN);
         returnValue = ExFunctions.checkLocalSession(lastLL);
         await this.pref.setData(StaticVariable.LAST_LOGIN, ExFunctions.getUTCTime());
-      }
-      
+      }    
 
     }, () => {
       this.dismissLoadCtrl();
@@ -92,7 +99,7 @@ export class Home3Page implements OnInit {
           handler: async data => {
             this.createLoadCtrl()
             const dataId = await this.pref.getData(StaticVariable.DATA_ID);
-            await this.api.DeleteData(dataId).then(res => {
+            await this.api.DeleteData(false, dataId).then(res => {
               this.dismissLoadCtrl();
               if (res === true) {
                 this.navCtrl.navigateBack(['home/home2']);
@@ -139,17 +146,28 @@ export class Home3Page implements OnInit {
               return;
 
             this.createLoadCtrl();
-            await this.api.EditDataInfo(
-              this.sensor_id,
-              data.sensorname).then(res => {
+            await this.api.EditDataInfo(false, this.sensor_id, data.sensorname).then(async res => {
+
+              if (res === true) {
                 this.dismissLoadCtrl();
-                if (res === true) {
-                  this.presentAlert("Sensor name has changed!");
-                  this.sensor_name = data.sensorname;
-                } else {
-                  this.presentAlert("Oops! Failed to change sensor name, try again later!");
-                }
-            })
+                this.presentAlert("Sensor name has changed!");
+                this.sensor_name = data.sensorname;
+              } else {
+                await this.api.EditDataInfo(false, this.sensor_id, data.sensorname).then(res => {
+
+                  if (res === true) {
+                    this.dismissLoadCtrl();
+                    this.presentAlert("Sensor name has changed!");
+                    this.sensor_name = data.sensorname;
+                  } else {
+                    this.dismissLoadCtrl();
+                    this.presentAlert("Oops! Failed to change sensor name, try again later!");
+                  }
+
+                });
+              }
+
+            });
           }
         }
       ]
@@ -159,7 +177,7 @@ export class Home3Page implements OnInit {
 
   async refreshData () {
     const dataId = await this.pref.getData(StaticVariable.DATA_ID);
-    await this.api.GetDataInfo(dataId).then(res => {
+    await this.api.GetDataInfo(true, dataId).then(res => {
       const userInfo = res['result'];
       this.sensor_id = userInfo['id'];
       this.sensor_name = userInfo['name'];

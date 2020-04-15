@@ -70,16 +70,32 @@ export class SeeDeviceDetailsPage implements OnInit {
 
             this.createLoadCtrl();
             await this.api.EditDeviceInfo(
+              false, 
               this.device_id,
               data.devicename,
               true,
-              this.device_description).then(res => {
+              this.device_description).then(async res => {
                 this.dismissLoadCtrl();
+
                 if (res === true) {
                   this.presentAlert("Device name has changed!");
                   this.device_name = data.devicename;
                 } else {
-                  this.presentAlert("Oops! Failed to change device name, try again later!");
+                  await this.api.EditDeviceInfo(
+                    true, 
+                    this.device_id,
+                    data.devicename,
+                    true,
+                    this.device_description).then(res => {
+                      this.dismissLoadCtrl();
+
+                      if (res === true) {
+                        this.presentAlert("Device name has changed!");
+                        this.device_name = data.devicename;
+                      } else {
+                        this.presentAlert("Oops! Failed to change device name, try again later!");
+                      }
+                    });
                 }
             })
           }
@@ -115,16 +131,33 @@ export class SeeDeviceDetailsPage implements OnInit {
 
             this.createLoadCtrl();
             await this.api.EditDeviceInfo(
+              false, 
               this.device_id,
               this.device_name,
               true,
-              data.devicedescription).then(res => {
+              data.devicedescription).then(async res => {
                 this.dismissLoadCtrl();
+                
                 if (res === true) {
                   this.presentAlert("Device description has changed!");
                   this.device_description = data.devicedescription;
                 } else {
-                  this.presentAlert("Oops! Failed to change device description, try again later!");
+                  await this.api.EditDeviceInfo(
+                    true, 
+                    this.device_id,
+                    this.device_name,
+                    true,
+                    data.devicedescription).then(async res => {
+                      this.dismissLoadCtrl();
+                      
+                      if (res === true) {
+                        this.presentAlert("Device description has changed!");
+                        this.device_description = data.devicedescription;
+                      } else {
+                        this.presentAlert("Oops! Failed to change device description, try again later!");
+                      }
+                      
+                    });
                 }
             })
           }
