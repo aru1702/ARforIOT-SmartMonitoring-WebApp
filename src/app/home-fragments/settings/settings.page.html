@@ -1,0 +1,90 @@
+<ion-content>
+
+  <div style="padding: 12px 24px;">
+    <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+      <ion-refresher-content
+        pullingText="Pull to refresh">
+      </ion-refresher-content>
+    </ion-refresher>
+
+    <div style="margin-left: 24px; margin-bottom: 24px; margin-right: 24px; overflow: auto;">
+      <div style="float: left; width: 50%;">
+        <ion-text color="primary">
+          <h1><b>My profile</b></h1>
+        </ion-text>
+      </div>
+      <div style="float: left; width: 50%; margin-top: 20px; text-align: end;">
+        <ion-button (click)="changePass()" color="tertiary">
+          <ion-icon slot="start" name="lock-closed"></ion-icon>
+          Change password
+        </ion-button>
+      </div>
+    </div>
+  
+    <!-- <div *ngIf="platformDesktop === true" style="margin-left: 24px; margin-bottom: 24px; margin-right: 24px; overflow: auto;">
+      <div style="float: left; width: 50%;">
+        <ion-text color="primary">
+          <h1><b>My profile</b></h1>
+        </ion-text>
+      </div>
+      <div style="float: left; width: 50%; text-align: end; margin-top: 20px;">
+        <div style="float: right;">
+          <ion-button (click)="editProfile()" color="primary">
+            <ion-icon slot="start" name="settings"></ion-icon>
+            Edit profile
+          </ion-button>
+        </div>
+        <div style="float: right;">
+          <ion-button (click)="changePass()" color="tertiary">
+            <ion-icon slot="start" name="lock-closed"></ion-icon>
+            Change password
+          </ion-button>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="platformDesktop === false" style="margin-left: 24px; margin-bottom: 24px; margin-right: 24px; overflow: auto;">
+      <div>
+        <ion-text color="primary">
+          <h1><b>My profile</b></h1>
+        </ion-text>
+      </div>
+      <div style="margin-top: 20px;">
+        <div style="float: left;">
+          <ion-button (click)="editProfile()" color="primary">
+            <ion-icon slot="start" name="settings"></ion-icon>
+            Edit profile
+          </ion-button>
+        </div>
+        <div style="float: left;">
+          <ion-button (click)="changePass()" color="tertiary">
+            <ion-icon slot="start" name="lock-closed"></ion-icon>
+            Change password
+          </ion-button>
+        </div>
+      </div>
+    </div> -->
+
+    <div style="margin-left: 24px; margin-bottom: 24px; margin-right: 24px; overflow: auto;">
+      <ion-item>
+        <ion-label position="floating">My ID number</ion-label>
+        <ion-input type="text" readonly="true" value="{{user_id}}"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Member name</ion-label>
+        <!-- <ion-icon slot="end" name="settings-outline" color="primary" (click)="editName()"></ion-icon> -->
+        <ion-input type="text" readonly="true" value="{{user_name}}"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Email address</ion-label>
+        <ion-input type="text" readonly="true" value="{{user_email}}"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Last update</ion-label>
+        <ion-input type="text" readonly="true" value="{{user_lastupdate}}"></ion-input>
+      </ion-item>
+    </div>
+
+  </div>
+
+</ion-content>

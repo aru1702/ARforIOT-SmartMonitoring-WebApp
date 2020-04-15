@@ -1,0 +1,24 @@
+ion-content {
+    --background: 
+        linear-gradient(
+            rgba(0, 0, 0, 0.75), 
+            rgba(0, 0, 0, 0.75)
+        ),
+        url("src/assets/img/background_1.jpg");
+}
+
+ion-item {
+    --background: null;
+}
+
+ion-toolbar {
+    --background: null;
+}
+
+.centered {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    /* bring your own prefixes */
+    transform: translate(-50%, -50%);
+}

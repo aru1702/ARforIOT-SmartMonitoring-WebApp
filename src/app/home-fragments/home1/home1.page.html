@@ -1,0 +1,48 @@
+<ion-content>
+
+  <div style="padding: 12px 24px;">
+    <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+      <ion-refresher-content
+        pullingText="Pull to refresh">
+      </ion-refresher-content>
+    </ion-refresher>
+  
+    <div style="margin-left: 24px; margin-bottom: 24px; margin-right: 24px; overflow: auto;">
+      <div style="float: left; width: 50%;">
+        <ion-text color="primary">
+          <h1><b>My IoT devices</b></h1>
+        </ion-text>
+      </div>
+      <div style="float: left; width: 50%; margin-top: 20px; text-align: end;">
+        <ion-button (click)="addNewDevice()">
+          <ion-icon slot="start" name="add"></ion-icon>
+          New device
+        </ion-button>
+      </div>
+    </div>
+      
+    <div *ngIf="deviceList.length > 0">
+      <ion-card style="float: left;" button (click)="cardClick(devices.deviceInfo.id)" *ngFor="let devices of deviceList">
+        <ion-card-header>
+          <ion-card-subtitle>Last update: {{devices.deviceInfo.last_update}}</ion-card-subtitle>
+          <ion-card-title>{{devices.deviceInfo.name}}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          {{devices.deviceInfo.description}}
+          <br>
+          <b>Available sensors: </b> {{devices.countData}}
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <div *ngIf="deviceList.length === 0" style="margin-top: 60px;">
+      <div style="text-align: center;">
+        <img style="max-height: 100px; opacity: 0.3;" src="../../../assets/img/box.png" alt="empty">
+        <br>
+        <h3 style="color: #8e8e8e;">Looks like empty here, why don't try to add something?</h3>
+      </div>
+    </div>
+
+  </div>
+
+</ion-content>

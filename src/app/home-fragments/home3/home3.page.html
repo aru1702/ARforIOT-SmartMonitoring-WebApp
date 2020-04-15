@@ -1,0 +1,51 @@
+<ion-content>
+
+  <div style="padding: 12px 24px;">
+    <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+      <ion-refresher-content
+        pullingText="Pull to refresh">
+      </ion-refresher-content>
+    </ion-refresher>
+
+    <div style="margin-left: 24px; margin-bottom: 24px; margin-right: 24px; overflow: auto;">
+      <div style="float: left; width: 50%;">
+        <div style="float: left; margin-top: 13px;">
+          <ion-button (click)="backButton()" fill="clear">
+            <ion-icon slot="icon-only" name="chevron-back"></ion-icon>
+          </ion-button>
+        </div>
+        <ion-text color="primary">
+          <h1><b>{{sensor_name}}</b></h1>
+        </ion-text>
+      </div>
+      <div style="float: left; width: 50%; margin-top: 20px; text-align: end;">
+        <ion-button (click)="deleteSensor()" color="danger">
+          <ion-icon slot="start" name="trash"></ion-icon>
+          Delete sensor
+        </ion-button>
+      </div>
+    </div>
+
+    <div style="margin-left: 24px; margin-bottom: 24px; margin-right: 24px; overflow: auto;">
+      <ion-item>
+        <ion-label position="floating">Sensor ID</ion-label>
+        <ion-input type="text" readonly="true" value="{{sensor_id}}"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Sensor name</ion-label>
+        <ion-icon slot="end" name="settings-outline" color="primary" (click)="editName()"></ion-icon>
+        <ion-input type="text" readonly="true" value="{{sensor_name}}"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Sensor value</ion-label>
+        <ion-input type="text" readonly="true" value="{{sensor_value}}"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Last update</ion-label>
+        <ion-input type="text" readonly="true" value="{{sensor_lastupdate}}"></ion-input>
+      </ion-item>
+    </div>
+
+  </div>
+
+</ion-content>

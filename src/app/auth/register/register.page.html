@@ -1,0 +1,47 @@
+<ion-content>
+
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="login" color="light"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+  <div class="centered" style="width: 75%; background-color: #fbfbfbcc; color: #4a4a4a; border-radius: 10px; padding: 24px;">
+    
+    <h2 style="text-align: center;">GETTING ABOARD</h2>
+
+    <div style="padding-top: 12px; margin-bottom: 48px;">
+
+      <ion-item>
+        <ion-label position="floating">Name</ion-label>
+        <ion-input required="true" type="text" [(ngModel)]="input_name"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">Email address</ion-label>
+        <ion-input required="true" type="email" [(ngModel)]="input_email"></ion-input>
+      </ion-item>
+      
+      <ion-item>
+        <ion-label position="floating">Password</ion-label>
+        <ion-input required="true" type="password" [(ngModel)]="input_password"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">Confirm password</ion-label>
+        <ion-input required="true" type="password" [(ngModel)]="input_re_password"></ion-input>
+      </ion-item>
+
+    </div>
+
+    <div style="text-align: center">
+      <ion-text>By clicking Register, you agree to our Terms, Data Use Policy, and including our Cookie Use.</ion-text>
+    </div>
+
+    <div style="padding-top: 24px;">
+      <ion-button (click)="performRegister()" expand="block" fill="solid" shape="round">REGISTER</ion-button>
+    </div>
+
+  </div>
+
+</ion-content>

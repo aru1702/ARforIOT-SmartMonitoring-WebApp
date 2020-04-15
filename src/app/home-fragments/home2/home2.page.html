@@ -1,0 +1,104 @@
+<ion-content>
+
+  <div style="padding: 12px 24px;">
+    <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+      <ion-refresher-content
+        pullingText="Pull to refresh">
+      </ion-refresher-content>
+    </ion-refresher>
+  
+    <div *ngIf="platformDesktop === true" style="margin-left: 24px; margin-bottom: 24px; margin-right: 24px; overflow: auto;">
+      <div style="float: left; width: 50%;">
+        <div style="float: left; margin-top: 13px;">
+          <ion-button (click)="backButton()" fill="clear">
+            <ion-icon slot="icon-only" name="chevron-back"></ion-icon>
+          </ion-button>
+        </div>
+        <ion-text color="primary">
+          <h1><b>{{deviceName}}</b></h1>
+        </ion-text>
+      </div>
+      <div style="float: left; width: 50%; text-align: end; margin-top: 20px;">
+        <div style="float: right;">
+          <ion-button (click)="deleteDevice()" color="danger">
+            <ion-icon slot="start" name="trash"></ion-icon>
+            Delete
+          </ion-button>
+        </div>
+        <div style="float: right;">
+          <ion-button (click)="seeDetails()" color="secondary">
+            <ion-icon slot="start" name="settings"></ion-icon>
+            See details
+          </ion-button>
+        </div>
+        <div style="float: right;">
+          <ion-button (click)="addNewSensor()" color="primary">
+            <ion-icon slot="start" name="add"></ion-icon>
+            New sensor
+          </ion-button>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="platformDesktop === false" style="margin-left: 24px; margin-bottom: 24px; margin-right: 24px; overflow: auto;">
+      <div>
+        <div style="float: left; margin-top: 13px;">
+          <ion-button (click)="backButton()" fill="clear">
+            <ion-icon slot="icon-only" name="chevron-back"></ion-icon>
+          </ion-button>
+        </div>
+        <ion-text color="primary">
+          <h1><b>{{deviceName}}</b></h1>
+        </ion-text>
+      </div>
+      <div style="margin-top: 20px;">
+        <div style="float: left;">
+          <ion-button (click)="addNewSensor()" color="primary">
+            <ion-icon slot="start" name="add"></ion-icon>
+            New sensor
+          </ion-button>
+        </div>
+        <div style="float: left;">
+          <ion-button (click)="seeDetails()" color="secondary">
+            <ion-icon slot="start" name="settings"></ion-icon>
+            See details
+          </ion-button>
+        </div>
+        <div style="float: left;">
+          <ion-button (click)="deleteDevice()" color="danger">
+            <ion-icon slot="start" name="trash"></ion-icon>
+            Delete
+          </ion-button>
+        </div>
+      </div>
+    </div>
+
+    <div style="clear: both; margin-left: 24px; margin-right: 24px;">
+      <ion-text>
+        <h3>Sensor list</h3>
+      </ion-text>
+    </div>
+      
+    <div *ngIf="sensorList.length > 0">
+      <ion-card style="float: left;" button (click)="cardClick(sensors.id)" *ngFor="let sensors of sensorList">
+        <ion-card-header>
+          <ion-card-subtitle>Last update: {{sensors.last_update}}</ion-card-subtitle>
+          <ion-card-title>{{sensors.name}}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <b>Value: </b> {{sensors.value}}
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <div *ngIf="sensorList.length === 0" style="margin-top: 60px;">
+      <div style="text-align: center;">
+        <img style="max-height: 100px; opacity: 0.3;" src="../../../assets/img/box.png" alt="empty">
+        <br>
+        <h3 style="color: #8e8e8e;">Looks like empty here, why don't try to add something?</h3>
+      </div>
+    </div>
+
+  </div>
+
+</ion-content>

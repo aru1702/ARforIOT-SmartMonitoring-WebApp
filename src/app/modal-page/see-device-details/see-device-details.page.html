@@ -1,0 +1,51 @@
+<ion-content>
+
+  <div style="padding: 24px;">
+    <ion-text color="primary" style="text-align: center;">
+      <h1><b>Device details</b></h1>
+    </ion-text>
+    <ion-item>
+      <ion-label position="stacked">ID</ion-label>
+      <ion-input type="text" readonly="true" value="{{device_id}}"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Name</ion-label>
+      <ion-icon slot="end" name="settings-outline" color="primary" (click)="editName()"></ion-icon>
+      <ion-input type="text" readonly="true" value="{{device_name}}"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Description</ion-label>
+      <ion-icon slot="end" name="settings-outline" color="primary" (click)="editDesc()"></ion-icon>
+      <ion-input type="text" readonly="true" value="{{device_description}}"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Last update</ion-label>
+      <ion-input type="text" readonly="true" value="{{device_last_update}}"></ion-input>
+    </ion-item>
+  </div>
+
+  <div style="margin-top: 24px; text-align: center;">
+    <ion-button (click)="seeQRCode()">
+      <ion-icon slot="start" name="qr-code"></ion-icon>
+      Show QR Code
+    </ion-button>
+
+    <div *ngIf="showQr === true">
+      <ngx-qrcode
+        [qrc-value] = "value"
+        qrc-class = "aclass"
+        qrc-errorCorrectionLevel = "L">
+      </ngx-qrcode>
+    </div>
+
+  </div>
+
+  <div style="margin-top: 36px; text-align: end; padding: 24px;">
+    <div>
+      <ion-button (click)="cancelEdit()" color="primary" fill="clear">
+        Close
+      </ion-button>
+    </div>
+  </div>
+
+</ion-content>
